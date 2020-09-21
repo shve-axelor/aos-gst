@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+	<form id="gst-invoice-form" name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" extension="true">
+		<extend target="/">
+			<attribute name="onNew" value="action-account-invoice-onnew-group,action-gst-invoice-method-set-invoiceline" />
+		</extend>
+		
+		<extend target="//field[@name='address']">
+			<attribute name="onChange" value="action-method-invoice-address-str,action-gst-invoice-method-recaclulate-invoiceline" />
+		</extend>
+		
+		<extend target="//panel[@name='totalsCompanyCurrencyPanel']">
+			<insert position="after">
+				<panel sidebar="true" name="totalGstPanel" title="Totals Amounts"
+						itemSpan="6" hideIf="partner == null">
+					<field name="netCgst" readonly="true" colSpan="6" />
+					<field name="netSgst" readonly="true" colSpan="6" />
+					<field name="netIgst" readonly="true" colSpan="6" />
+					<field name="exTaxTotal" readonly="true" colSpan="6" />
+				</panel>
+			</insert>
+		</extend>
+	</form>
+
+	<action-method name="action-gst-invoice-method-set-invoiceline">
+		<call class="com.axelor.gst.web.GstInvoiceController" method="setInvoicelineProducts" />
+	</action-method>
+	
+	<action-method name="action-gst-invoice-method-recaclulate-invoiceline">
+		<call class="com.axelor.gst.web.GstInvoiceController" method="reCalculateInvoiceLine"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-show-gst-invoice">
+		<call class="com.axelor.gst.web.GstInvoiceController" method="showGstInvoiceReport"/>
+	</action-method>
+</object-views>

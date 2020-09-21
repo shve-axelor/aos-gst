@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form id="gst-invoice-line-form" name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" extension="true">
+		<extend target="//field[@name='product']">
+			<attribute name="onChange" value="action-group-account-invoice-line-product-onchange,action-invoice-line-method-compute-gst"/>
+		</extend>
+		
+		<extend target="//panel[@name='informationsPanel']/field[@name='qty']">
+			<attribute name="onChange" value="action-group-account-invoice-line-qty-onchange,action-invoice-line-method-compute-gst"/>
+		</extend>
+		
+		<extend target="//field[@name='price']">
+			<attribute name="onChange" value="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount,action-invoice-line-method-compute-gst"/>
+		</extend>
+		
+		<extend target="//field[@name='companyInTaxTotal']">
+			<insert position="after">
+				<field name="gstRate" readonly="true" />
+				<field name="iGst" readonly="true" />
+				<field name="sGst" readonly="true" />
+				<field name="cGst" readonly="true" />
+			</insert>
+		</extend>
+	</form>
+
+	<action-method name="action-invoice-line-method-compute-gst">
+		<call class="com.axelor.gst.web.GstInvoiceLineController" method="comuteGstFields" />
+	</action-method>
+
+</object-views>
